@@ -15,6 +15,6 @@ public class WriteOpInt extends WriteOp{
 
     public WriteOpInt(byte type, int val, int enc, int size) {
         super(type, enc, size);
-        value = val;
+        this.value = val;
     }
 }
