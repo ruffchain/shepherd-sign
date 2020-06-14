@@ -10,7 +10,7 @@ import org.bitcoin.NativeSecp256k1Util;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.ECKey.ECDSASignature;
-import org.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.asn1.ASN1Integer;
