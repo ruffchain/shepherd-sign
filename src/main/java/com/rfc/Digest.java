@@ -135,4 +135,12 @@ public class Digest {
 //
 //        return sign;
 //    }
+    public static String publicKeyFromSecretKey(String secret) {
+        BigInteger priv = new BigInteger(secret, 16);
+
+        ECKey key = ECKey.fromPrivate(priv);
+        String pub = key.getPublicKeyAsHex();
+
+        return pub;
+    }
 }

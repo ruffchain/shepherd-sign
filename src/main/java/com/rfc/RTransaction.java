@@ -1,13 +1,13 @@
 package com.rfc;
 
-
 import java.math.BigDecimal;
 import java.util.Arrays;
-
 import com.alibaba.fastjson.JSONException;
 // import org.json.JSONObject;
 import  com.alibaba.fastjson.JSONObject;
-// import lib.rfc.DemoAddr;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import com.rfc.bufferwriter.BufferWriter;
 
 /**
  * Simplified ValueTransaction
@@ -22,6 +22,8 @@ public class RTransaction {
     public JSONObject m_input;
     private BigDecimal m_value;
     private BigDecimal m_fee;
+
+    private static final Logger logger = LogManager.getLogger(RTransaction.class);
 
     public RTransaction() {
         this.m_hash = Encoding.NULL_HASH;
@@ -55,18 +57,18 @@ public class RTransaction {
     }
 
     public void setPublicKey(String strPri) {
-        this.m_publicKey = DemoAddr.publicKeyFromSecretKey(strPri);
+        this.m_publicKey = Digest.publicKeyFromSecretKey(strPri);
     }
 
     public void print() {
-        System.out.println("\nprint:");
-        System.out.println(this.m_method);
-        System.out.println(this.m_nonce);
-        System.out.println(this.m_publicKey);
-        System.out.println(Encoding.toStringifiable(this.m_input, true));
-        System.out.println(this.m_value);
-        System.out.println(this.m_fee);
-        System.out.println(Digest.bytesToText(this.m_signature));
+        logger.debug("RTransaction print:");
+        logger.debug(this.m_method);
+        logger.debug(this.m_nonce);
+        logger.debug(this.m_publicKey);
+        logger.debug(Encoding.toStringifiable(this.m_input, true));
+        logger.debug(this.m_value);
+        logger.debug(this.m_fee);
+        logger.debug(Digest.bytesToText(this.m_signature));
     }
 
     public byte[] render() {
@@ -84,7 +86,7 @@ public class RTransaction {
         return dataBuf;
     }
 
-    public boolean sign(String strPri) {
+    public boolean sign(String strPri) throws Exception{
         if (strPri.length() > 0) {
 
             this.m_signature = this.updateData(strPri);
@@ -99,7 +101,7 @@ public class RTransaction {
         return false;
     }
 
-    private byte[] updateData(String strPri) {
+    private byte[] updateData(String strPri) throws Exception{
         BufferWriter writer = new BufferWriter();
         writer.writeVarString(this.m_method);
         writer.writeU32(this.m_nonce);
@@ -112,13 +114,14 @@ public class RTransaction {
         byte[] content = writer.render();
         byte[] byteHash = Digest.hash256(content, content.length);
         String strHash = Digest.bytesToText(byteHash);
-        System.out.println("\nHash:");
-        System.out.println(strHash);
+        logger.debug("updateData(), Hash:");
+        logger.debug(strHash);
         this.m_hash = strHash;
-        System.out.println("\nSignature:");
+        logger.debug("Signature:");
+
         byte[] signature = Digest.sign(strHash, strPri);
 
-        System.out.println(Arrays.toString(Digest.bytesToInts(signature)));
+        logger.debug(Arrays.toString(Digest.bytesToInts(signature)));
 
         return signature;
     }
@@ -128,9 +131,7 @@ public class RTransaction {
     }
 
     public static JSONObject parse(byte[] data) {
-        System.out.println("\n====================");
-        System.out.println("    parse the byte[] to json");
-        System.out.println("=====================");
+        logger.debug("parse the byte[] to json");
 
         final int STATE_METHOD = 0;
         final int STATE_METHOD_BODY = 10;
@@ -251,9 +252,7 @@ public class RTransaction {
             obj.put("signature", Digest.bytesToText(byteSign));
         } catch (JSONException e) {
             e.printStackTrace();
-
         }
-
         return obj;
     }
 }
