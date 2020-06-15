@@ -71,7 +71,7 @@ public class RTransaction {
         logger.debug(Digest.bytesToText(this.m_signature));
     }
 
-    public byte[] render() {
+    public byte[] render() throws  Exception{
         BufferWriter writer = new BufferWriter();
         writer.writeVarString(this.m_method);
         writer.writeU32(this.m_nonce);

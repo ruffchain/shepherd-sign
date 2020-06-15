@@ -1,17 +1,17 @@
 package com.rfc;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Arrays;
-//import org.bitcoin.NativeSecp256k1;
-//import org.bitcoin.NativeSecp256k1Util;
-import org.bitcoinj.core.ECKey;
-import org.bitcoinj.core.Sha256Hash;
+
+import org.bitcoinj.core.*;
 import org.bitcoinj.core.ECKey.ECDSASignature;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-//import org.spongycastle.asn1.ASN1Integer;
+import org.bitcoinj.params.MainNetParams;
 import org.spongycastle.crypto.digests.RIPEMD160Digest;
 
 public class Digest {
@@ -142,5 +142,113 @@ public class Digest {
         String pub = key.getPublicKeyAsHex();
 
         return pub;
+    }
+    /**
+     * address from secret key ,
+     *
+     * @param secret 32 bytes hex format
+     */
+    public static String addressFromSecretKey(String secret) {
+
+        BigInteger priv = new BigInteger(secret, 16);
+
+        ECKey key = ECKey.fromPrivate(priv);
+        NetworkParameters params = new MainNetParams();
+        Address addr = key.toAddress(params);
+
+        return addr.toString(); // lyc: 主动调用 toString，addr + "" 其实也是触发 toString() 方法
+    }
+    public static String createKey() {
+
+        try {
+            SecureRandom secureRandom = SecureRandom.getInstanceStrong();
+            ECKey key = new ECKey(secureRandom);
+
+            BigInteger pvt = key.getPrivKey();
+
+            String strKey = Digest.adjustTo64(pvt.toString(16));
+
+            return strKey;
+
+        } catch (NoSuchAlgorithmException e) {
+            System.err.println("createKey():" + e);
+            return null;
+        }
+    }
+
+    public static String adjustTo64(final String s) {
+        switch (s.length()) {
+            case 62:
+                return "00" + s;
+            case 63:
+                return "0" + s;
+            case 64:
+                return s;
+            default:
+                throw new IllegalArgumentException("not a valid key: " + s);
+        }
+    }
+
+    /**
+     * check address valid or not
+     */
+    public static boolean isValidAddress(final String str) {
+        NetworkParameters params = new MainNetParams();
+
+        try {
+            Address addr = Address.fromBase58(params, str);
+
+        } catch (AddressFormatException e) {
+            System.err.println("Wrong addr");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean isValidAmount(final String str) {
+        try {
+            BigDecimal num = new BigDecimal(str);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isValidAmount(final BigDecimal dec) {
+        try {
+            BigDecimal num = dec;
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isValidFee(final String str) {
+        try {
+            double num = Double.parseDouble(str);
+            return num >= 0.1;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+    }
+
+    public static boolean isValidFee(final int innum) {
+        try {
+            int num = innum;
+            return num >= 0.1;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static boolean isValidFee(final BigDecimal innum) {
+        try {
+            double num = innum.doubleValue();
+            return (num >= 0.1);
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
