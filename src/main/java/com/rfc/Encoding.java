@@ -1,12 +1,8 @@
 package com.rfc;
 
-
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
-
-// import org.json.JSONObject;
 import com.alibaba.fastjson.JSONObject;
 
 public class Encoding {
@@ -47,24 +43,6 @@ public class Encoding {
         return st;
     }
 
-    // public static void test() {
-    // System.out.println("\ntest");
-    // String text = "df";
-
-    // byte[] byteArray = new byte[text.length() / 2];
-
-    // for (int i = 0; i < byteArray.length; i++) {
-    // System.out.println(":" + i);
-    // byte hi = (byte) (Character.digit(text.charAt(i), 16) & 0xff);
-    // byte lo = (byte) (Character.digit(text.charAt(i + 1), 16) & 0xff);
-    // byteArray[i] = (byte) (hi << 4 | lo);
-    // System.out.println(byteArray[i]);
-    // }
-    // for (int i = 0; i < byteArray.length; i++) {
-    // System.out.println(Integer.toHexString(byteArray[i] & 0xff));
-    // }
-
-    // }
     public static int sizeVarint(int num) {
         if (num < 0xfd) {
             return 1;
@@ -81,31 +59,38 @@ public class Encoding {
         return 9;
     }
 
+    /**
+     * a shallow JSONObject here
+     *
+     * @param input
+     * @param parsable
+     * @return String
+     */
     public static String toStringifiable(JSONObject input, boolean parsable) {
         try {
+            // lyc: StringBuffer 一般在多线程时使用，单线程下 StringBuilder 效率高很多
+            StringBuilder sb = new StringBuilder("{");
 
-            Iterator keys = input.keys();
+            for( String key : input.keySet()){
 
-            StringBuffer sb = new StringBuffer("{"); // lyc: StringBuffer 一般在多线程时使用，单线程下 StringBuilder 效率高很多
-            while (keys.hasNext()) {
-                if (sb.length() > 1) {
-                    sb.append(',');
-                }
-                Object o = keys.next();
-                sb.append(JSONObject.quote(o.toString()));
-                sb.append(':');
+                sb.append(key);
+                sb.append(":");
 
-                Object o1 = input.get(o.toString());
-                if (o1.getClass() == String.class) {
+                Object obj = input.get(key);
+                if(obj.getClass() == String.class){
                     sb.append("\"")
-                            .append("s").append(o1)
+                            .append("s").append(obj)
                             .append("\"");
-                } else if (o1.getClass() == BigDecimal.class) {
-                    sb.append("n").append(o1);
-                } else if (o1.getClass() == Integer.class) {
-                    sb.append(o1.toString());
+                }else if(obj.getClass() == BigDecimal.class){
+                    sb.append("n").append(obj);
+                }else if(obj.getClass() == Integer.class){
+                    sb.append(obj.toString());
                 }
+                sb.append(",");
+            }
 
+            if(sb.length()>2){
+                sb.deleteCharAt(sb.length()-1);
             }
 
             sb.append("}");
