@@ -48,7 +48,7 @@ public class Digest {
         }
         byte[] bufOut = new byte[text.length() / 2];
         for (int i = 0; i < bufOut.length; i++) {
-            logger.debug(":" + i);
+            // logger.debug(":" + i);
             byte hi = (byte) (Character.digit(text.charAt(i * 2), 16) & 0xff);
             byte lo = (byte) (Character.digit(text.charAt(i * 2 + 1), 16) & 0xff);
 

@@ -72,8 +72,9 @@ public class Encoding {
             StringBuilder sb = new StringBuilder("{");
 
             for( String key : input.keySet()){
-
+                sb.append("\"");
                 sb.append(key);
+                sb.append("\"");
                 sb.append(":");
 
                 Object obj = input.get(key);

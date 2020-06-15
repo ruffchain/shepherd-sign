@@ -352,10 +352,8 @@ public class BufferWriter {
         val = val.setScale(Encoding.MAX_DECIMAL_LEN, RoundingMode.HALF_UP);
         String str = val.stripTrailingZeros().toPlainString();
         BigDecimal valTemp = new BigDecimal(str);
-        // System.out.println(valTemp);
         String strTemp = valTemp + "";
         strTemp = strTemp.replace('E', 'e');
-        // System.out.println(strTemp);
         this.writeVarString(strTemp);
 
     }

@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import com.rfc.bufferwriter.BufferWriter;
 
 /**
- * Simplified ValueTransaction
+ * 交易类 RTransaction
  */
 public class RTransaction {
     public String m_hash;
@@ -22,6 +22,7 @@ public class RTransaction {
     public JSONObject m_input;
     private BigDecimal m_value;
     private BigDecimal m_fee;
+
 
     private static final Logger logger = LogManager.getLogger(RTransaction.class);
 
