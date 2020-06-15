@@ -4,10 +4,10 @@ package com.rfc;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import lib.rfc.DemoAddr;
+import com.alibaba.fastjson.JSONException;
+// import org.json.JSONObject;
+import  com.alibaba.fastjson.JSONObject;
+// import lib.rfc.DemoAddr;
 
 /**
  * Simplified ValueTransaction

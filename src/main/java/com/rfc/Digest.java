@@ -11,23 +11,25 @@ import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.ECKey.ECDSASignature;
 import com.alibaba.fastjson.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 //import org.spongycastle.asn1.ASN1Integer;
 import org.spongycastle.crypto.digests.RIPEMD160Digest;
 
 public class Digest {
-    private static final Logger logger = LoggerFactory.getLogger(Digest.class);
+    private static final Logger logger = LogManager.getLogger(Digest.class);
+
     public static byte[] hash256(byte[] inBytes, int offset) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] bytes = Arrays.copyOf(inBytes, offset);
-            byte[] encodedhash = digest.digest(bytes);
-            return digest.digest(encodedhash);
+            byte[] encodedHash = digest.digest(bytes);
+            return digest.digest(encodedHash);
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("xxxx", e);
+            throw new RuntimeException("SHA-256 dual hash failed", e);
         }
-
     }
 
     public static byte[] RIPEMD160(byte[] input) {
