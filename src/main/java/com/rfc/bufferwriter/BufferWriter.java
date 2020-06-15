@@ -5,6 +5,9 @@ import java.math.RoundingMode;
 import java.nio.ByteBuffer;
 import java.util.Vector;
 
+import com.rfc.Digest;
+import com.rfc.Encoding;
+
 public class BufferWriter {
     private Vector<WriteOp> ops;
     private int offset;
@@ -24,7 +27,7 @@ public class BufferWriter {
         ops.clear();
         offset = 0;
     }
-    public byte[] render() {
+    public byte[] render() throws  Exception{
         byte[] data = new byte[offset];
         int off = 0;
         int mInt = 0;
@@ -200,7 +203,7 @@ public class BufferWriter {
                         data[off++] = (byte) (mInt >> 24);
                     } else {
                         // We dont have number that big
-                        System.exit(-1);
+                        throw new Exception("Excessive large number");
                     }
                     break;
                 case WriteOp.STR:
