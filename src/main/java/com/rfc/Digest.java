@@ -7,15 +7,16 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
+import com.mysql.jdbc.log.LogFactory;
 import org.bitcoinj.core.*;
 import org.bitcoinj.core.ECKey.ECDSASignature;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.bitcoinj.params.MainNetParams;
 import org.spongycastle.crypto.digests.RIPEMD160Digest;
 
 public class Digest {
-    private static final Logger logger = LogManager.getLogger(Digest.class);
+    private static final Logger logger = LoggerFactory.getLogger(Digest.class);
 
     public static byte[] hash256(byte[] inBytes, int offset) {
         try {
@@ -93,7 +94,7 @@ public class Digest {
         StringBuilder strR = new StringBuilder(signature.r.toString(16));
         StringBuilder strS = new StringBuilder(signature.s.toString(16));
         logger.debug("output R");
-        logger.debug(strR);
+        logger.debug(strR.toString());
         logger.debug("len:" + strR.length());
         if(strR.length() > 64){
             throw new Exception("sign R out of range");
@@ -102,9 +103,9 @@ public class Digest {
             strR.insert(0, "0");
         }
         logger.debug("after prefix padding");
-        logger.debug(strR);
+        logger.debug(strR.toString());
         logger.debug("output S");
-        logger.debug(strS);
+        logger.debug(strS.toString());
         logger.debug("len:" + strS.length());
 
         if(strS.length() > 64){
@@ -114,7 +115,7 @@ public class Digest {
             strS.insert(0, "0");
         }
         logger.debug("after prefix padding");
-        logger.debug(strS);
+        logger.debug(strS.toString());
 
         byte[] sign = textToBytes(strR + strS.toString());
 

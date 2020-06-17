@@ -3,10 +3,9 @@ package com.rfc;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import com.alibaba.fastjson.JSONException;
-// import org.json.JSONObject;
 import  com.alibaba.fastjson.JSONObject;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import com.rfc.bufferwriter.BufferWriter;
 
 /**
@@ -24,7 +23,7 @@ public class RTransaction {
     private BigDecimal m_fee;
 
 
-    private static final Logger logger = LogManager.getLogger(RTransaction.class);
+    private static final Logger logger = LoggerFactory.getLogger(RTransaction.class);
 
     public RTransaction() {
         this.m_hash = Encoding.NULL_HASH;
@@ -63,12 +62,12 @@ public class RTransaction {
 
     public void print() {
         logger.debug("RTransaction print:");
-        logger.debug(this.m_method);
-        logger.debug(this.m_nonce);
+        logger.debug(this.m_method.toString());
+        logger.debug(String.valueOf(this.m_nonce));
         logger.debug(this.m_publicKey);
         logger.debug(Encoding.toStringifiable(this.m_input, true));
-        logger.debug(this.m_value);
-        logger.debug(this.m_fee);
+        logger.debug(String.valueOf(this.m_value));
+        logger.debug(String.valueOf(this.m_fee));
         logger.debug(Digest.bytesToText(this.m_signature));
     }
 
