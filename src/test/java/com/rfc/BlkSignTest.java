@@ -3,8 +3,8 @@ package com.rfc;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.junit.Test;
 
 
@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 
 public class BlkSignTest {
-    private static final Logger logger = LogManager.getLogger(BlkSignTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(BlkSignTest.class);
 
     private  void readFile(StringBuffer buffer, String filename) throws IOException {
         InputStream is = new FileInputStream(filename);
@@ -49,7 +49,7 @@ public class BlkSignTest {
         JSONArray arrObj = obj.getJSONArray("data");
 
         for(int i=0; i< arrObj.size(); i++){
-            logger.debug(i);
+            logger.debug("{}",i);
             JSONObject objTx = arrObj.getJSONObject(i);
             String secret = objTx.getString("fromSecret");
             int nonce = objTx.getInteger("nonce");

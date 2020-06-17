@@ -4,18 +4,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.alibaba.fastjson.JSONObject;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.util.stream.IntStream;
 
 /**
  * Unit test for simple App.
  */
 public class AppTest 
 {
-    private static final Logger logger = LogManager.getLogger(AppTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(AppTest.class);
 
     private  static  JSONObject getTxJSON(){
         String SECRET="da6feae3ca249c359200487934216f45dd1c2159116c3eecc348a74a3c7d16ba";
@@ -89,11 +90,11 @@ public class AppTest
             assertTrue( false );
         }
 
-        logger.debug("Signature length:"+tx.m_signature.length);
-        logger.debug("Expected length:" + expectedSignature.length);
+        logger.debug("Signature length:{}" , tx.m_signature.length);
+        logger.debug("Expected length:{}" ,expectedSignature.length);
+
         assertEquals(expectedSignature.length,tx.m_signature.length );
-        for(int i=0; i< tx.m_signature.length; i++){
-            assertEquals(expectedSignature[i], tx.m_signature[i]);
-        }
+        IntStream.range(0, tx.m_signature.length).forEach(
+                i -> assertEquals(expectedSignature[i], tx.m_signature[i]));
     }
 }

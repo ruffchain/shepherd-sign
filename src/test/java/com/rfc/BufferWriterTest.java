@@ -2,8 +2,8 @@ package com.rfc;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rfc.bufferwriter.BufferWriter;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import static org.junit.Assert.assertEquals;
 
 public class BufferWriterTest {
-    private static final Logger logger = LogManager.getLogger(BufferWriterTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(BufferWriterTest.class);
 
     @Test
     public void testWriteBytes() throws  Exception{

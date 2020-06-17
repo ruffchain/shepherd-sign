@@ -7,7 +7,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
-import com.mysql.jdbc.log.LogFactory;
 import org.bitcoinj.core.*;
 import org.bitcoinj.core.ECKey.ECDSASignature;
 import org.slf4j.LoggerFactory;
@@ -95,7 +94,7 @@ public class Digest {
         StringBuilder strS = new StringBuilder(signature.s.toString(16));
         logger.debug("output R");
         logger.debug(strR.toString());
-        logger.debug("len:" + strR.length());
+        logger.debug("len: {}" , strR.length());
         if(strR.length() > 64){
             throw new Exception("sign R out of range");
         }
@@ -106,7 +105,7 @@ public class Digest {
         logger.debug(strR.toString());
         logger.debug("output S");
         logger.debug(strS.toString());
-        logger.debug("len:" + strS.length());
+        logger.debug("len: {}" , strS.length());
 
         if(strS.length() > 64){
             throw new Exception("sign S out of range");
@@ -114,7 +113,7 @@ public class Digest {
         while (strS.length() != 64) {
             strS.insert(0, "0");
         }
-        logger.debug("after prefix padding");
+        logger.debug("after prefix padding: {}");
         logger.debug(strS.toString());
 
         byte[] sign = textToBytes(strR + strS.toString());
@@ -172,7 +171,7 @@ public class Digest {
             return strKey;
 
         } catch (NoSuchAlgorithmException e) {
-            System.err.println("createKey():" + e);
+            logger.error("createKey(): {}" , e);
             return null;
         }
     }
@@ -200,7 +199,7 @@ public class Digest {
             Address addr = Address.fromBase58(params, str);
 
         } catch (AddressFormatException e) {
-            System.err.println("Wrong addr");
+            logger.error("Wrong addr {}", e);
             return false;
         }
 
