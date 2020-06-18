@@ -40,7 +40,7 @@ public class RPacket {
      * @return
      * @throws Exception
      */
-    public static RTransaction unpack(String strPacket) throws  Exception{
+    public static JSONObject unpack(String strPacket) throws  Exception{
         logger.debug("unpack the packet");
         JSONObject packetObj =  JSON.parseObject(strPacket);
 
@@ -50,6 +50,19 @@ public class RPacket {
                             .getJSONObject("tx")
                             .getJSONArray("data");
         logger.debug("data array: {}", dataArr.toString());
-        return new RTransaction();
+        logger.debug("data array length: {}", dataArr.size());
+
+        int [] dataInt = new int[dataArr.size()];
+        byte[] dataByte = new byte[dataArr.size()];
+
+        for(int i =0; i< dataArr.size(); i++){
+            dataInt[i] = dataArr.getInteger(i);
+            dataByte[i] = dataArr.getByte(i);
+        }
+        logger.debug("data byte[]: {}", dataInt);
+
+        JSONObject objTx = RTransaction.parse(dataByte);
+        logger.debug("unpack to JSONObject: {}", objTx);
+        return objTx;
     }
 }

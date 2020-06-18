@@ -7,7 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class RPacketTest {
     private static final Logger logger = LoggerFactory.getLogger(AppTest.class);
@@ -28,20 +29,36 @@ public class RPacketTest {
         tx.setValue(new BigDecimal("4.7891"));
         tx.setFee(new BigDecimal("0.1"));
 
+        JSONObject txObj;
         try{
             tx.sign(secret);
+//            logger.debug("signature: {}", tx.m_signature);
+
             String strPacket = RPacket.pack(tx);
 
             logger.debug("strPacket: {}", strPacket);
 
-            RTransaction txRecover = RPacket.unpack(strPacket);
-
+            txObj = RPacket.unpack(strPacket);
 
         }catch(Exception e){
             logger.error("sign error: {}" , e);
             assertTrue(false);
+            return;
         }
 
-        assertEquals(1,1 );
+        assertEquals("transferTo",txObj.getString("method"));
+//        assertEquals(2,
+//                txObj.getInteger("nonce"));
+        logger.debug("original signature len:{}",Digest.bytesToText(tx.m_signature).length());
+        logger.debug("unpack signature len:{}", txObj.getString("signature").length());
+        assertEquals(Digest.bytesToText(tx.m_signature),
+                txObj.getString("signature"));
+        assertEquals("s" + input.getString("to"),txObj.getJSONObject("input").getString("to"));
+        assertEquals(Digest.publicKeyFromSecretKey(secret),
+                txObj.getString("publicKey"));
+        assertEquals("4.7891",
+                txObj.getString("amount"));
+        assertEquals("0.1",
+                txObj.getString("fee"));
     }
 }
